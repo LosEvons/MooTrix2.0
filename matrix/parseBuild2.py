@@ -40,7 +40,7 @@ def listmaker(svParsed, cnt):
         else:
             cnt[word] = 1
 
-    with open('filematrix2.csv', 'w', newline='') as csvfile:
+    with open('filematrix2.csv', 'w', newline='', encoding='UTF-8') as csvfile:
         cntCommon = cnt.most_common()
         cntWrite = Counter(dict(cntCommon))
         fieldnames = ['Word', 'Wordcount']
