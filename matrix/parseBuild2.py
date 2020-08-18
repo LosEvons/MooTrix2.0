@@ -4,18 +4,25 @@ import string
 import re
 from collections import Counter
 import unicodedata
-
-sv = open('sv.txt', 'r', encoding="utf-8")
-svRead = sv.read()
-svRead = svRead.lower()
-print("Total characters in file:")
-print(len(svRead))
+import PySimpleGUI as sg
+import os
+#Fileopen
+def fileopen(svRead):
+    firstWindow()
+    sv = open(fileName, 'r', encoding="utf-8")
+    svRead = sv.read()
+    sv.close()
+    svRead = svRead.lower()
+    print("Total characters in file:")
+    print(len(svRead))
+    return svRead
 
 #variables
 svParsed = "svparsed is empty"
 svTF = "svTF is empty"
 cnt = Counter()
 OrdCnt = Counter()
+svRead = ''
 
 #cleanup
 svParsed = ""
@@ -50,15 +57,19 @@ def listmaker(svParsed, cnt):
             writer.writerow({'Word': tag, 'Wordcount': str(count)})
     csvfile.close()
 
+#GUI
+def firstWindow():
+    global fileName
+    fileName = sg.popup_get_file('File to open')
+    print(fileName)
+    return fileName
+
 #Checks and initiation
+fileopen(svRead)
 listmaker(svParsed, cnt)
-print(len(cnt))
 print("starting to rank words...")
 print("Most used words:")
 print("\n")
 print("Writing a CSV-File...")
-#filewriter(cnt)
 print("CSV-file written!")
 print("Shutting down...")
-#fileclosures
-sv.close()
