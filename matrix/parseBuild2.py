@@ -7,7 +7,8 @@ import unicodedata
 import PySimpleGUI as sg
 import os
 #Fileopen
-def fileopen(svRead):
+def fileopen():
+    global svRead
     firstWindow()
     sv = open(fileName, 'r', encoding="utf-8")
     svRead = sv.read()
@@ -19,26 +20,21 @@ def fileopen(svRead):
 
 #variables
 svParsed = "svparsed is empty"
-svTF = "svTF is empty"
 cnt = Counter()
 OrdCnt = Counter()
+exceptionList = ["@", ",", ".", "!", ":", ";","-", "?", "»", "—", ""]
+svParsed = ''
 svRead = ''
-
-#cleanup
-svParsed = ""
-svTF = ""
-exceptionList = ["@", ",", ".", "!", ":", ";","-", "?", "»", "—",]
-for char in svRead:
-    if char.casefold() in exceptionList:
-        newChar = char.replace(char, '')
-        svParsed += newChar
-    elif char.casefold() not in exceptionList:
-        svParsed += char
-    else:
-        continue
-
 #listmaker
-def listmaker(svParsed, cnt):
+def listmaker(cnt, svParsed, svRead, exceptionList):
+    for char in svRead:
+        if char.casefold() in exceptionList:
+            newChar = char.replace(char, '')
+            svParsed += newChar
+        elif char.casefold() not in exceptionList:
+            svParsed += char
+        else:
+            continue
     svParsed = svParsed.casefold()
     svParsed = svParsed.strip()
     for word in re.split(" |\n", svParsed):
@@ -47,7 +43,10 @@ def listmaker(svParsed, cnt):
         else:
             cnt[word] = 1
 
-    with open('filematrix2.csv', 'w', newline='', encoding='UTF-8') as csvfile:
+    secondWindow()
+    print(dirName)
+    filename = 'filematrix2.csv'
+    with open(dirName+'/'+filename, 'w', newline='', encoding='UTF-8') as csvfile:
         cntCommon = cnt.most_common()
         cntWrite = Counter(dict(cntCommon))
         fieldnames = ['Word', 'Wordcount']
@@ -64,9 +63,16 @@ def firstWindow():
     print(fileName)
     return fileName
 
+def secondWindow():
+    global dirName
+    dirName = sg.popup_get_folder('File save location')
+    print(dirName)
+    return dirName
 #Checks and initiation
-fileopen(svRead)
-listmaker(svParsed, cnt)
+fileopen()
+print(len(svRead))
+print("foo")
+listmaker(cnt, svParsed, svRead, exceptionList)
 print("starting to rank words...")
 print("Most used words:")
 print("\n")
