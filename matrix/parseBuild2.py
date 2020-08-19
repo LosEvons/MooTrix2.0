@@ -9,11 +9,11 @@ import os
 #Fileopen
 def fileopen():
     global svRead
-    firstWindow()
-    sv = open(fileName, 'r', encoding="utf-8")
+    startWindow()
+    sv = open(useFileName, 'r', encoding="utf-8")
     svRead = sv.read()
     sv.close()
-    svRead = svRead.lower()
+    svRead = svRead.casefold()
     print("Total characters in file:")
     print(len(svRead))
     return svRead
@@ -21,7 +21,6 @@ def fileopen():
 #variables
 svParsed = "svparsed is empty"
 cnt = Counter()
-OrdCnt = Counter()
 exceptionList = ["@", ",", ".", "!", ":", ";","-", "?", "»", "—", ""]
 svParsed = ''
 svRead = ''
@@ -35,7 +34,7 @@ def listmaker(cnt, svParsed, svRead, exceptionList):
             svParsed += char
         else:
             continue
-    svParsed = svParsed.casefold()
+
     svParsed = svParsed.strip()
     for word in re.split(" |\n", svParsed):
         if word in cnt:
@@ -43,10 +42,7 @@ def listmaker(cnt, svParsed, svRead, exceptionList):
         else:
             cnt[word] = 1
 
-    secondWindow()
-    print(dirName)
-    filename = 'filematrix2.csv'
-    with open(dirName+'/'+filename, 'w', newline='', encoding='UTF-8') as csvfile:
+    with open(dirName+'/'+customName, 'w', newline='', encoding='UTF-8') as csvfile:
         cntCommon = cnt.most_common()
         cntWrite = Counter(dict(cntCommon))
         fieldnames = ['Word', 'Wordcount']
@@ -57,16 +53,24 @@ def listmaker(cnt, svParsed, svRead, exceptionList):
     csvfile.close()
 
 #GUI
-def firstWindow():
-    global fileName
-    fileName = sg.popup_get_file('File to open')
-    print(fileName)
-    return fileName
-
-def secondWindow():
+def startWindow():
+    global customName
+    global useFileName
     global dirName
-    dirName = sg.popup_get_folder('File save location')
-    print(dirName)
+    sg.theme('BluePurple')
+    layout = [[sg.Text('Input', size=(7,1)), sg.Input(key='-FILEIN-'), sg.FileBrowse()],
+            [sg.Text('Result name', size=(7,1)), sg.Input(key='-FILENAME-')],
+            [sg.Text('Save location', size=(7,1)), sg.Input(key='-FILEOUT-'), sg.FolderBrowse()],
+            [sg.Submit(), sg.Cancel()]]
+    window = sg.Window('MooTrix', layout)
+
+    event, values = window.read()
+    window.close()
+    useFileName = values['-FILEIN-']
+    customName = values['-FILENAME-']+'.csv'
+    dirName = values['-FILEOUT-']
+    return customName
+    return useFileName
     return dirName
 #Checks and initiation
 fileopen()
