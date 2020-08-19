@@ -4,34 +4,37 @@ import string
 import re
 from collections import Counter
 import unicodedata
-
-sv = open('sv.txt', 'r', encoding="utf-8")
-svRead = sv.read()
-svRead = svRead.lower()
-print("Total characters in file:")
-print(len(svRead))
+import PySimpleGUI as sg
+import os
+#Fileopen
+def fileopen():
+    global svRead
+    firstWindow()
+    sv = open(fileName, 'r', encoding="utf-8")
+    svRead = sv.read()
+    sv.close()
+    svRead = svRead.lower()
+    print("Total characters in file:")
+    print(len(svRead))
+    return svRead
 
 #variables
 svParsed = "svparsed is empty"
-svTF = "svTF is empty"
 cnt = Counter()
 OrdCnt = Counter()
-
-#cleanup
-svParsed = ""
-svTF = ""
-exceptionList = ["@", ",", ".", "!", ":", ";","-", "?", "»", "—",]
-for char in svRead:
-    if char.casefold() in exceptionList:
-        newChar = char.replace(char, '')
-        svParsed += newChar
-    elif char.casefold() not in exceptionList:
-        svParsed += char
-    else:
-        continue
-
+exceptionList = ["@", ",", ".", "!", ":", ";","-", "?", "»", "—", ""]
+svParsed = ''
+svRead = ''
 #listmaker
-def listmaker(svParsed, cnt):
+def listmaker(cnt, svParsed, svRead, exceptionList):
+    for char in svRead:
+        if char.casefold() in exceptionList:
+            newChar = char.replace(char, '')
+            svParsed += newChar
+        elif char.casefold() not in exceptionList:
+            svParsed += char
+        else:
+            continue
     svParsed = svParsed.casefold()
     svParsed = svParsed.strip()
     for word in re.split(" |\n", svParsed):
@@ -40,7 +43,10 @@ def listmaker(svParsed, cnt):
         else:
             cnt[word] = 1
 
-    with open('filematrix2.csv', 'w', newline='', encoding='UTF-8') as csvfile:
+    secondWindow()
+    print(dirName)
+    filename = 'filematrix2.csv'
+    with open(dirName+'/'+filename, 'w', newline='', encoding='UTF-8') as csvfile:
         cntCommon = cnt.most_common()
         cntWrite = Counter(dict(cntCommon))
         fieldnames = ['Word', 'Wordcount']
@@ -50,15 +56,26 @@ def listmaker(svParsed, cnt):
             writer.writerow({'Word': tag, 'Wordcount': str(count)})
     csvfile.close()
 
+#GUI
+def firstWindow():
+    global fileName
+    fileName = sg.popup_get_file('File to open')
+    print(fileName)
+    return fileName
+
+def secondWindow():
+    global dirName
+    dirName = sg.popup_get_folder('File save location')
+    print(dirName)
+    return dirName
 #Checks and initiation
-listmaker(svParsed, cnt)
-print(len(cnt))
+fileopen()
+print(len(svRead))
+print("foo")
+listmaker(cnt, svParsed, svRead, exceptionList)
 print("starting to rank words...")
 print("Most used words:")
 print("\n")
 print("Writing a CSV-File...")
-#filewriter(cnt)
 print("CSV-file written!")
 print("Shutting down...")
-#fileclosures
-sv.close()
