@@ -21,7 +21,7 @@ def fileopen():
 #variables
 svParsed = "svparsed is empty"
 cnt = Counter()
-exceptionList = ["@", ",", ".", "!", ":", ";","-", "?", "»", "—", ""]
+exceptionList = ["@", ",", ".", "!", ":", ";","-", "?", "»", ""]
 svParsed = ''
 svRead = ''
 #listmaker
