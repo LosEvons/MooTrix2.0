@@ -35,7 +35,6 @@ def listmaker(cnt, svParsed, svRead, exceptionList):
         else:
             continue
 
-    svParsed = svParsed.strip()
     for word in re.split(" |\n", svParsed):
         if word in cnt:
             cnt[word]+=1
