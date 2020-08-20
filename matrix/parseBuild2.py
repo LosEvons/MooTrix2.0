@@ -1,3 +1,12 @@
+"""        if char in exceptionList:
+            newChar = char.replace(char, '')
+            svParsed += newChar
+        elif char.casefold() not in exceptionList:
+            svParsed += char
+        else:
+            continue
+"""
+
 #imports
 import csv
 import string
@@ -27,13 +36,8 @@ svRead = ''
 #listmaker
 def listmaker(cnt, svParsed, svRead, exceptionList):
     for char in svRead:
-        if char.casefold() in exceptionList:
-            newChar = char.replace(char, '')
-            svParsed += newChar
-        elif char.casefold() not in exceptionList:
+        if char.isalnum() or char == ' ':
             svParsed += char
-        else:
-            continue
 
     svParsed = svParsed.strip()
     for word in re.split(" |\n", svParsed):
@@ -45,6 +49,8 @@ def listmaker(cnt, svParsed, svRead, exceptionList):
     with open(dirName+'/'+customName, 'w', newline='', encoding='UTF-8') as csvfile:
         cntCommon = cnt.most_common()
         cntWrite = Counter(dict(cntCommon))
+        print(len(cnt))
+        print(len(cntWrite))
         fieldnames = ['Word', 'Wordcount']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
