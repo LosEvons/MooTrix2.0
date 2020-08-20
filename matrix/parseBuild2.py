@@ -58,9 +58,9 @@ def startWindow():
     global useFileName
     global dirName
     sg.theme('BluePurple')
-    layout = [[sg.Text('Input', size=(7,1)), sg.Input(key='-FILEIN-'), sg.FileBrowse()],
-            [sg.Text('Result name', size=(7,1)), sg.Input(key='-FILENAME-')],
-            [sg.Text('Save location', size=(7,1)), sg.Input(key='-FILEOUT-'), sg.FolderBrowse()],
+    layout = [[sg.Text('Input', size=(9,1)), sg.Input(key='-FILEIN-'), sg.FileBrowse()],
+            [sg.Text('Result', size=(9,1)), sg.Input(key='-FILENAME-')],
+            [sg.Text('Save', size=(9,1)), sg.Input(key='-FILEOUT-'), sg.FolderBrowse()],
             [sg.Submit(), sg.Cancel()]]
     window = sg.Window('MooTrix', layout)
 
