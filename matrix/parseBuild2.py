@@ -15,37 +15,56 @@ from collections import Counter
 import unicodedata
 import PySimpleGUI as sg
 import os
+import someFile
 #Fileopen
 def fileopen():
-    global svRead
     startWindow()
-    sv = open(useFileName, 'r', encoding="utf-8")
-    svRead = sv.read()
-    sv.close()
+    if useFileName.lower().endswith(('.png', '.jpg', '.jpeg')):
+        someFile.processing(useFileName)
+    else:
+        global svRead
+        sv = open(useFileName, 'r', encoding="utf-8")
+        svRead = sv.read()
+        sv.close()
     svRead = svRead.casefold()
     print("Total characters in file:")
     print(len(svRead))
     return svRead
-
 #variables
 svParsed = "svparsed is empty"
 cnt = Counter()
 exceptionList = ["@", ",", ".", "!", ":", ";","-", "?", "»", ""]
 svParsed = ''
+svParsed2 = ''
 svRead = ''
 #listmaker
-def listmaker(cnt, svParsed, svRead, exceptionList):
+def listmaker(cnt, svParsed, svParsed2, svRead, exceptionList):
     for char in svRead:
-        if char.isalnum() or char == ' ':
+        if char.isalnum() or char == ' ' or char == '\n':
             svParsed += char
-
+    for char in svRead:
+        if char.casefold() in exceptionList:
+            newChar = char.replace(char, '')
+            svParsed += newChar
+        elif char.casefold() not in exceptionList:
+            svParsed2 += char
+    print("xd")
+    print(len(svParsed))
+    print(len(svParsed2))
+    for char in svParsed2:
+        if char not in svParsed:
+            print(char)
     for word in re.split(" |\n", svParsed):
         if word in cnt:
             cnt[word]+=1
         else:
             cnt[word] = 1
 
-    with open(dirName+'/'+customName, 'w', newline='', encoding='UTF-8') as csvfile:
+    with open(dirName+'/'+customName+'.txt', 'w') as textfile:
+        textfile.write(svRead)
+    textfile.close()
+
+    with open(dirName+'/'+customName+'.cfg', 'w', newline='', encoding='UTF-8') as csvfile:
         cntCommon = cnt.most_common()
         cntWrite = Counter(dict(cntCommon))
         print(len(cnt))
@@ -68,20 +87,18 @@ def startWindow():
             [sg.Text('Save', size=(9,1)), sg.Input(key='-FILEOUT-'), sg.FolderBrowse()],
             [sg.Submit(), sg.Cancel()]]
     window = sg.Window('MooTrix', layout)
-
     event, values = window.read()
-    window.close()
     useFileName = values['-FILEIN-']
-    customName = values['-FILENAME-']+'.csv'
+    customName = values['-FILENAME-']
     dirName = values['-FILEOUT-']
     return customName
     return useFileName
     return dirName
+    window.close()
 #Checks and initiation
 fileopen()
 print(len(svRead))
-print("foo")
-listmaker(cnt, svParsed, svRead, exceptionList)
+listmaker(cnt, svParsed, svParsed2, svRead, exceptionList)
 print("starting to rank words...")
 print("Most used words:")
 print("\n")
