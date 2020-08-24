@@ -23,7 +23,7 @@ def fileopen():
         someFile.processing(useFileName)
     else:
         global svRead
-        sv = open(useFileName, 'r', encoding="utf-8")
+        sv = open(useFileName, 'r', encoding="UTF-8")
         svRead = sv.read()
         sv.close()
     svRead = svRead.casefold()
@@ -45,10 +45,11 @@ def listmaker(cnt, svParsed, svParsed2, svRead, exceptionList):
     for char in svRead:
         if char.casefold() in exceptionList:
             newChar = char.replace(char, '')
-            svParsed += newChar
+            svParsed2 += newChar
         elif char.casefold() not in exceptionList:
             svParsed2 += char
-    print("xd")
+
+    print("svParsed and svParsed2 values:")
     print(len(svParsed))
     print(len(svParsed2))
     for char in svParsed2:

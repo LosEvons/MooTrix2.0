@@ -6,5 +6,5 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Users\emilm\AppData\Local\Tesseract
 def processing(useFileName):
     global svRead
     img = cv2.imread(useFileName)
-    svRead = pytesseract.image_to_string(img)
+    svRead = pytesseract.image_to_string(img, lang='eng+fin')
     return svRead
