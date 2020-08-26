@@ -4,9 +4,10 @@ import unicodedata
 import pytesseract
 import os.path
 import re
+import cv2
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\emilm\AppData\Local\Tesseract-OCR\tesseract.exe'
 #Opens the file
-def fileopen(svRead, useFileName):
+def fileopen(svRead, useFileName, dirName, customName):
     print("File from: "+useFileName+" opened")
     if useFileName.lower().endswith(('.png', '.jpg', '.jpeg')):
         print("Your file is a picture, trying to extract text...")
@@ -29,7 +30,7 @@ def parseAlnum(svRead, svParsed, inclusionList):
     for char in svRead:
         charCode = ord(char)
         if char.isalnum() or char in inclusionList:
-            if 8192 <= charCode <= 8303:
+            if not 8192 <= charCode <= 8303:
                 #this checks a range of UTF-8 characters that includes punctuation that the isalnum() doesn't catch
                 svParsed += char
         else:
@@ -39,7 +40,7 @@ def parseAlnum(svRead, svParsed, inclusionList):
     return svParsed
 
 def listMaker(svParsed):
-    #this makes a list out of every worrd in the parsed textfile
+    #this makes a list  out of every worrd in the parsed textfile
     svSplit = re.split(" |\n", svParsed)
     cnt = Counter(svSplit)
     print("Total number of words detected: ")
@@ -70,5 +71,5 @@ def processing(useFileName):
     #This is used for getting text out of images
     img = cv2.imread(useFileName)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    svRead = pytesseract.image_to_string(gray, land='eng+fin')
+    svRead = pytesseract.image_to_string(gray, lang='eng+fin')
     return svRead

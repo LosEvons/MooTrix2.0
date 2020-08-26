@@ -19,7 +19,7 @@ useFileName = values['-FILEIN-']
 customName = values['-FILENAME-']
 dirName = values['-FILEOUT-']
 
-svRead = mootrix1.fileopen(svRead, useFileName)
+svRead = mootrix1.fileopen(svRead, useFileName, dirName, customName)
 print("Cleanup started")
 svParsed = mootrix1.parseAlnum(svRead, svParsed, inclusionList)
 print("Formatting file...")
